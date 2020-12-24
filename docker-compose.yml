@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  webservice:
+    container_name: webservice
+    build:
+      context: .
+    command: ['npm', 'run', 'start']
+    environment: 
+      MYSQL_HOST: 'dbinstancechris.cli9ef70s1dn.us-east-1.rds.amazonaws.com'
+      MYSQL_USER: admin
+      MYSQL_PWD: password
+      MYSQL_DB: usersDB
+      PORT: 8080
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  db:
+    image: 'mysql:5.7'
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_USER: 'root'
+      MYSQL_PASS: ''
+      MYSQL_DATABASE: 'users'
+    volumes:
+      - db:/var/lib/mysql
+      - ./config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    ports:
+      - 3307:3306
+volumes:
+  db:
